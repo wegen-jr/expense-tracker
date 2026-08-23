@@ -101,7 +101,7 @@ export default function ForgotPassword() {
         setPassword("");
         setConfirmPassword("");
 
-        navigate("/login");
+        navigate("/");
       } else {
         toast.error(data.message);
       }
