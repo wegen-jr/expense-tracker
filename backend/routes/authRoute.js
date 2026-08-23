@@ -3,8 +3,8 @@ const {signUp,login, verifyEmail, resetPassword}=require('../controller/authCont
 const router=express.Router();
 
 
-router.post('/signUp',signUp);
-router.post('/',login);
+router.post('/signup',signUp);
+router.post('/login',login);
 router.put('/reset-password',resetPassword);
 router.post('/verify-email',verifyEmail);
 
