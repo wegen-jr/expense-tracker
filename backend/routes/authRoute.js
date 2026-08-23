@@ -4,7 +4,7 @@ const router=express.Router();
 
 
 router.post('/signUp',signUp);
-router.post('/login',login);
+router.post('/',login);
 router.put('/reset-password',resetPassword);
 router.post('/verify-email',verifyEmail);
 
