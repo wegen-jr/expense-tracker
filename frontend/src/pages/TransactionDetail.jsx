@@ -132,7 +132,7 @@ export default function TransactionDetail({ type }) {
       }
 
       const res = await fetch(
-        `http://localhost:5000/api/${
+        `${API_URL}/api/${
           isExpense ? "expenses" : "incomes"
         }/${id}`,
         {
@@ -187,7 +187,7 @@ export default function TransactionDetail({ type }) {
       setDeleting(true);
 
       const res = await fetch(
-        `http://localhost:5000/api/${
+        `${API_URL}/api/${
           isExpense ? "expenses" : "incomes"
         }/${id}`,
         {
