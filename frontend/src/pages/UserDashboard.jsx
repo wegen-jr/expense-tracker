@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { data } from 'react-router';
 
 export default function UserDashboard() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem('token');
   const date = new Date();
   const [expenses, setExpenses] = useState([]); // Changed to plural for clarity
@@ -23,7 +24,7 @@ export default function UserDashboard() {
   const getRecentExpense = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/expenses/recent', {
+      const res = await fetch(`${API_URL}/api/expenses/recent`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`
@@ -46,7 +47,7 @@ export default function UserDashboard() {
   }
   const getProfile=async ()=>{
      try{
-            const res=await fetch('http://localhost:5000/api/user/profile',{
+            const res=await fetch(`${API_URL}/api/user/profile`,{
                 method:'Get',
                 headers:{
                     "Content-Type":"application/json",
@@ -70,7 +71,7 @@ export default function UserDashboard() {
   const getSummary = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/summary', {
+      const res = await fetch(`${API_URL}/api/summary`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`

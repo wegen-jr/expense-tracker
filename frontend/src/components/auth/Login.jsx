@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../LoginNavbar";
 
 export default function Login() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,7 @@ export default function Login() {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         {
           method: "POST",
           headers: {

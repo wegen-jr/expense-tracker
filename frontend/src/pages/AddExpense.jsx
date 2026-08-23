@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddExpense(){
+  const API_URL = import.meta.env.VITE_API_URL;
       const [active, setActive] = useState("expenses");
 const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const token = localStorage.getItem("token");
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/expenses/add",
+          `${API_URL}/api/expenses/add `,
         {
           method: "POST",
           headers: {

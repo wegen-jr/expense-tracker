@@ -13,6 +13,7 @@ import Navbar from "../LoginNavbar";
 
 export default function Registration() {
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -69,7 +70,7 @@ export default function Registration() {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/auth/signUp",
+        `${API_URL}/api/auth/signUp`,
         {
           method: "POST",
           headers: {

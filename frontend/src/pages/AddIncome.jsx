@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function AddIncome() {
+  const API_URL = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
   const [active, setActive] = useState("income");
   
@@ -55,7 +56,7 @@ export default function AddIncome() {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/incomes",
+        `${API_URL}/api/incomes`,
         {
           method: "POST",
           headers: {

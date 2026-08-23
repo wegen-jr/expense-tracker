@@ -16,7 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function TransactionDetail({ type }) {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
 
   const isExpense = type === "expense";
@@ -55,7 +55,7 @@ export default function TransactionDetail({ type }) {
       setLoading(true);
 
       const res = await fetch(
-        `http://localhost:5000/api/${
+        `${API_URL}/api/${
           isExpense ? "expenses" : "incomes"
         }/${id}`,
         {

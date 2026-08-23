@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function IncomePage() {
   const token = localStorage.getItem("token");
   const [active, setActive] = useState("income");
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const [incomes, setIncomes] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate=useNavigate();
@@ -76,7 +76,7 @@ export default function IncomePage() {
       });
 
       const res = await fetch(
-        `http://localhost:5000/api/incomes?${params.toString()}`,
+        `${API_URL}/api/incomes?${params.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

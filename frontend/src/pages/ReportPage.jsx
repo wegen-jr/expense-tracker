@@ -17,7 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function ReportPage() {
   const token = localStorage.getItem("token");
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,7 +28,7 @@ export default function ReportPage() {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/expenses",
+            `${API_URL}/api/expenses`,
         {
           method: "GET",
           headers: {

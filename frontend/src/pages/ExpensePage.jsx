@@ -9,7 +9,7 @@ export default function ExpensePage() {
       const [loading, setLoading]=useState(false);
       const token=localStorage.getItem('token');
       const navigate=useNavigate()
-
+      const API_URL = import.meta.env.VITE_API_URL;
       const [filters, setFilters] = useState({
         category: "",
         minAmount: "",
@@ -68,7 +68,7 @@ export default function ExpensePage() {
   });
 
   const res = await fetch(
-    `http://localhost:5000/api/expenses?${params.toString()}`,
+    `${API_URL}/api/expenses?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

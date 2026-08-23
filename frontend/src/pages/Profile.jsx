@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 export default function Profile(){
+    const API_URL = import.meta.env.VITE_API_URL;
     const token=localStorage.getItem('token');
     const [profile,setProfile]=useState({})
     const navigate=useNavigate();
@@ -24,7 +25,7 @@ export default function Profile(){
   };
   const getProfile=async ()=>{
      try{
-            const res=await fetch('http://localhost:5000/api/user/profile',{
+            const res=await fetch(`${API_URL}/api/user/profile`,{
                 method:'Get',
                 headers:{
                     "Content-Type":"application/json",
@@ -87,7 +88,7 @@ const handleSubmit = async (e) => {
 
 
     const res = await fetch(
-      "http://localhost:5000/api/user/update",
+      `${API_URL}/api/user/update`,
       {
         method: "PUT",
         headers: {

@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-
+  const API_URL = import.meta.env.VITE_API_URL;
   const [step, setStep] = useState("email");
   const [email, setEmail] = useState("");
 
@@ -33,7 +33,7 @@ export default function ForgotPassword() {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/auth/verify-email",
+        `${API_URL}/api/auth/verify-email`,
         {
           method: "POST",
           headers: {
@@ -78,7 +78,7 @@ export default function ForgotPassword() {
       setLoading(true);
 
       const res = await fetch(
-        "http://localhost:5000/api/auth/reset-password",
+            `${API_URL}/api/auth/reset-password`,
         {
           method: "PUT",
           headers: {
