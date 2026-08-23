@@ -70,7 +70,7 @@ export default function Registration() {
       setLoading(true);
 
       const res = await fetch(
-        `${API_URL}/api/auth/signUp`,
+        `${API_URL}/api/auth/signup`,
         {
           method: "POST",
           headers: {
