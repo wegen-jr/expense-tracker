@@ -1,7 +1,8 @@
 const User=require('../model/userModel');
 const jwt=require('jsonwebtoken');
 const bcrypt=require('bcryptjs');
-const nodemailer=require('nodemailer');
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
 const signUp=async (req,res)=>{
    try{
     const {firstName,lastName,email,password,confirmPassword}=req.body;
@@ -39,29 +40,32 @@ const signUp=async (req,res)=>{
    }
    const hashedPassword=await bcrypt.hash(password,10);
     const generatedOTP=generateOTP();
-    const OTPExpiresIn=new Date(Date.now() + 90*1000);   
-   const user=await User.create({
-    firstName:firstName,
-    lastName:lastName,
-    email:email,
-    password:hashedPassword,
-    OTP:generatedOTP,
-    OTP_expiry:OTPExpiresIn    
-   });
-   if(user){
-    const message=`Your OTP is ${generatedOTP}. It will expire in 90 seconds.`;
-    const subject="OTP Verification";
-    await sendEmail(email,message,subject);
+    const OTPExpiresIn=new Date(Date.now() + 90*1000);  
+    const user = await User.create({
+    firstName,
+    lastName,
+    email,
+    password: hashedPassword,
+    OTP: generatedOTP,
+    OTP_expiry: OTPExpiresIn    
+});
 
-   return res.status(201).json({
-    success:true,
-    message:"user is created successfully.",
-   });
-}else{
-    return res.status(400).json({
-    success:true,
-    message:"invalid user data"
-   });
+console.log("USER CREATED");
+
+if(user){
+    const message = `Your OTP is ${generatedOTP}. It will expire in 90 seconds.`;
+    const subject = "OTP Verification";
+
+    console.log("ABOUT TO SEND EMAIL");
+
+    await sendEmail(email, message, subject);
+
+    console.log("EMAIL SENT");
+
+    return res.status(201).json({
+        success: true,
+        message: "user is created successfully.",
+    });
 }
 }catch(e){
     return res.status(500).json({
@@ -102,23 +106,24 @@ try{
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000); // Generates a random 6-digit OTP
 }
-const sendEmail=async (email,message,subject)=>{
-    const transporter=new nodemailer.createTransport({
-          host:'smtp.gmail.com',
-          port:587,
-          secure:false,
-          auth:{
-            user:process.env.MY_USER,
-            pass:process.env.MY_PASSWORD
-          }
+const sendEmail = async (email, message, subject) => {
+    console.log("Trying to send email...");
+
+    const { data, error } = await resend.emails.send({
+        from: "Expense Tracker <onboarding@resend.dev>",
+        to: [email],
+        subject: subject,
+        text: message
     });
-    await transporter.sendMail({
-      from:process.env.MY_USER,
-      to:email,
-      subject:subject,
-      text:message
-    })
-}
+
+    if (error) {
+        console.error("RESEND ERROR:", error);
+        throw new Error(error.message);
+    }
+
+    console.log("Email sent successfully");
+    console.log("Resend ID:", data.id);
+};
 const verifyOTP = async (req, res) => {
   const { email, otp } = req.body;
 
