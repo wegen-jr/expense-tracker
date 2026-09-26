@@ -46,14 +46,6 @@ export default function Registration() {
     }
 
     if (
-      formData.email.length < 14 ||
-      formData.email.length > 25
-    ) {
-      toast.error("Email must be between 14 and 25 characters");
-      return;
-    }
-
-    if (
       formData.password.length < 8 ||
       formData.password.length > 14
     ) {
