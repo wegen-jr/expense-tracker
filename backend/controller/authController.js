@@ -1,9 +1,11 @@
 const User=require('../model/userModel');
 const jwt=require('jsonwebtoken');
 const bcrypt=require('bcryptjs');
+const nodemailer=require('nodemailer');
 const signUp=async (req,res)=>{
    try{
     const {firstName,lastName,email,password,confirmPassword}=req.body;
+    
    if(!firstName || !lastName || !email || !password || !confirmPassword){
    return res.status(400).json({
         success:false,
@@ -36,19 +38,24 @@ const signUp=async (req,res)=>{
     })
    }
    const hashedPassword=await bcrypt.hash(password,10);
-   console.log(hashedPassword.length)
+    const generatedOTP=generateOTP();
+    const OTPExpiresIn=new Date(Date.now() + 90*1000);   
    const user=await User.create({
     firstName:firstName,
     lastName:lastName,
     email:email,
-    password:hashedPassword
+    password:hashedPassword,
+    OTP:generatedOTP,
+    OTP_expiry:OTPExpiresIn    
    });
    if(user){
+    const message=`Your OTP is ${generatedOTP}. It will expire in 90 seconds.`;
+    const subject="OTP Verification";
+    await sendEmail(email,message,subject);
+
    return res.status(201).json({
     success:true,
     message:"user is created successfully.",
-    token:generateToken(user._id)
-
    });
 }else{
     return res.status(400).json({
@@ -92,6 +99,81 @@ try{
         })
 }
 }
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000); // Generates a random 6-digit OTP
+}
+const sendEmail=async (email,message,subject)=>{
+    const transporter=new nodemailer.createTransport({
+          host:'smtp.gmail.com',
+          port:587,
+          secure:false,
+          auth:{
+            user:process.env.MY_USER,
+            pass:process.env.MY_PASSWORD
+          }
+    });
+    await transporter.sendMail({
+      from:process.env.MY_USER,
+      to:email,
+      subject:subject,
+      text:message
+    })
+}
+const verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+      if(!otp) {
+          return res.status(400).json({
+              success: false,
+              message: " OTP is required.",
+          });
+      }
+      if( typeof otp !== 'number' || otp < 100000 || otp > 999999) {
+          return res.status(400).json({
+              success: false,
+              message: "OTP must be 6 digits number.",
+          });
+      }
+      
+      const user = await User.findOne({ email });
+
+      if(!user) {
+          return res.status(404).json({
+              success: false,
+              message: "No account found with this email.",
+          });
+      }
+      
+      if(user.OTP !== otp) {
+          return res.status(400).json({
+              success: false,
+              message: "Invalid OTP.",
+          });
+      }
+
+      if(user.OTP_expiry < new Date()) {
+          return res.status(400).json({
+              success: false,
+              message: "OTP has expired.",
+          });
+      }
+      user.emailVerified = true;
+      user.OTP = null; 
+      user.OTP_expiry = null; 
+      await user.save();
+      return res.status(200).json({
+          success: true,
+          message: "OTP verified successfully.",
+      });
+      
+  }catch (e) {
+      return res.status(500).json({
+          success: false,
+          message: e.message,
+      });
+  }
+}
 const verifyEmail = async (req, res) => {
   const { email } = req.body;
 
@@ -114,7 +196,7 @@ const verifyEmail = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Email verified.",
+      message: "Email authenticated.",
     });
 
   } catch (e) {
@@ -177,7 +259,10 @@ const resetPassword = async (req, res) => {
   }
 };
 const generateToken=(id)=>{
-   return jwt.sign({id},process.env.JWT_SECRET,{
+   return jwt.sign(
+    {id},
+    process.env.JWT_SECRET,
+    {
         expiresIn:'1h'
     })
 }
@@ -192,5 +277,6 @@ module.exports={
     login,
     sendData,
     resetPassword,
-    verifyEmail
+    verifyEmail,
+    verifyOTP
 }

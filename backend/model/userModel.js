@@ -16,8 +16,6 @@ const userSchema=new mongoose.Schema({
     email:{
         type:String,
         required:[true,"enter email"],
-        minLength:14,
-        maxLength:25,
         unique:true
     },
     password:{
@@ -25,6 +23,16 @@ const userSchema=new mongoose.Schema({
         required:[true,"enter password"],
         minLength:8,
         
+    },
+    emailVerified:{
+        type:Boolean,
+        default:false
+    },
+    OTP:{
+        type:Number
+    },
+    OTP_expiry:{
+        type:Date
     }
 },{timestamps:true})
 module.exports=mongoose.model('Users',userSchema);

@@ -10,6 +10,7 @@ const getProfile=async (req,res)=>{
                 firstName:user.firstName,
                 lastName:user.lastName,
                 email:user.email,
+                emailVerified:user.emailVerified
             });
         }else{
             return res.status(404).json({
