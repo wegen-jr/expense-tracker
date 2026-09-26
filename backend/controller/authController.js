@@ -40,7 +40,7 @@ const signUp=async (req,res)=>{
    }
    const hashedPassword=await bcrypt.hash(password,10);
     const generatedOTP=generateOTP();
-    const OTPExpiresIn=new Date(Date.now() + 90*1000);  
+    const OTPExpiresIn=new Date(Date.now() + 5*60*1000);  
     const user = await User.create({
     firstName,
     lastName,
@@ -53,7 +53,7 @@ const signUp=async (req,res)=>{
 console.log("USER CREATED");
 
 if(user){
-    const message = `Your OTP is ${generatedOTP}. It will expire in 90 seconds.`;
+    const message = `Your OTP is ${generatedOTP}. It will expire in 5 minutes.`;
     const subject = "OTP Verification";
 
     console.log("ABOUT TO SEND EMAIL");
